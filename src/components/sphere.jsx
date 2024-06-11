@@ -43,51 +43,46 @@ export default function Sphere() {
     setIsSphereMoving(false);
   };
   return (
-    <Resize width scale={3}>
-      <mesh
-        ref={sphereRef}
-        onPointerDown={handlePointerDown}
-        onPointerUp={handlePointerUp}
-        onPointerOut={handlePointerUp}
-        scale={viewport.width < 4 ? 0.5 : 0.6}
-      >
-        <sphereGeometry args={[SPHERE_RADIUS, 50, 50]} />
-        <meshStandardMaterial map={texture} />
-        {categories.map((categoryItems, categoryI) => (
-          <group
-            rotation-y={THREE.MathUtils.degToRad(72 * categoryI)}
-            key={categoryI}
-          >
-            {categoryItems.map((item, itemI) => (
-              <ServiceItem
-                key={`category${categoryI}-item${itemI}`}
-                {...item}
-              />
-            ))}
-            {/* Draw lines from the category title to each child */}
-            {categoryItems.map((item, itemI) => {
-              if (item.isTitle && isValidCoordinate(item.position)) {
-                const titlePosition = new THREE.Vector3(...item.position);
-                return categoryItems.map((child, childI) => {
-                  if (!child.isTitle && isValidCoordinate(child.position)) {
-                    const childPosition = new THREE.Vector3(...child.position);
-                    return (
-                      <Line
-                        key={`line-${categoryI}-${childI}`}
-                        points={[titlePosition, childPosition]}
-                        color="black"
-                        lineWidth={1}
-                      />
-                    );
-                  }
-                  return null;
-                });
-              }
-              return null;
-            })}
-          </group>
-        ))}
-      </mesh>
-    </Resize>
+    <mesh
+      ref={sphereRef}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
+      onPointerOut={handlePointerUp}
+      scale={viewport.width < 4 ? 0.8 : 0.9}
+    >
+      <sphereGeometry args={[SPHERE_RADIUS, 50, 50]} />
+      <meshStandardMaterial map={texture} />
+      {categories.map((categoryItems, categoryI) => (
+        <group
+          rotation-y={THREE.MathUtils.degToRad(72 * categoryI)}
+          key={categoryI}
+        >
+          {categoryItems.map((item, itemI) => (
+            <ServiceItem key={`category${categoryI}-item${itemI}`} {...item} />
+          ))}
+          {/* Draw lines from the category title to each child */}
+          {categoryItems.map((item, itemI) => {
+            if (item.isTitle && isValidCoordinate(item.position)) {
+              const titlePosition = new THREE.Vector3(...item.position);
+              return categoryItems.map((child, childI) => {
+                if (!child.isTitle && isValidCoordinate(child.position)) {
+                  const childPosition = new THREE.Vector3(...child.position);
+                  return (
+                    <Line
+                      key={`line-${categoryI}-${childI}`}
+                      points={[titlePosition, childPosition]}
+                      color="black"
+                      lineWidth={1}
+                    />
+                  );
+                }
+                return null;
+              });
+            }
+            return null;
+          })}
+        </group>
+      ))}
+    </mesh>
   );
 }
