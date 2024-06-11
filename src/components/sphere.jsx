@@ -5,6 +5,7 @@ import {
   getCameraTargetPositionAfterRotation,
   moveAtPosition,
   isValidCoordinate,
+  createCirclePoints,
 } from "../lib/utils";
 import ServiceItem from "./service-item";
 import { categories } from "../lib/data";
@@ -42,6 +43,7 @@ export default function Sphere() {
   const handlePointerUp = () => {
     setIsSphereMoving(false);
   };
+  const circlePoints = createCirclePoints(SPHERE_RADIUS + 0.1, 100);
   return (
     <mesh
       ref={sphereRef}
@@ -60,29 +62,26 @@ export default function Sphere() {
           {categoryItems.map((item, itemI) => (
             <ServiceItem key={`category${categoryI}-item${itemI}`} {...item} />
           ))}
-          {/* Draw lines from the category title to each child */}
           {categoryItems.map((item, itemI) => {
             if (item.isTitle && isValidCoordinate(item.position)) {
-              const titlePosition = new THREE.Vector3(...item.position);
+              const titlePosition = item.position;
               return categoryItems.map((child, childI) => {
                 if (!child.isTitle && isValidCoordinate(child.position)) {
-                  const childPosition = new THREE.Vector3(...child.position);
                   return (
                     <Line
                       key={`line-${categoryI}-${childI}`}
-                      points={[titlePosition, childPosition]}
+                      points={[titlePosition, child.position]}
                       color="black"
                       lineWidth={1}
                     />
                   );
                 }
-                return null;
               });
             }
-            return null;
           })}
         </group>
       ))}
+      <Line points={circlePoints} color="red" lineWidth={1} />
     </mesh>
   );
 }

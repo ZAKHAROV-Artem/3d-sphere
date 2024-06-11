@@ -1,1 +1,1 @@
-export const SPHERE_RADIUS = 1;
+export const SPHERE_RADIUS = 0.8;

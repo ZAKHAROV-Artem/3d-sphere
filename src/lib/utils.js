@@ -62,3 +62,14 @@ export function isValidCoordinate(coordinate) {
     coordinate.every((val) => typeof val === "number" && !isNaN(val))
   );
 }
+
+export function createCirclePoints(radius, segments) {
+  const points = [];
+  for (let i = 0; i <= segments; i++) {
+    const angle = (i / segments) * Math.PI * 2;
+    points.push(
+      new THREE.Vector3(Math.cos(angle) * radius, 0, Math.sin(angle) * radius),
+    );
+  }
+  return points;
+}
