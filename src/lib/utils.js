@@ -38,7 +38,7 @@ export function getCameraTargetPositionAfterRotation(
   return new THREE.Vector3(
     closestItemPosition[0],
     closestItemPosition[1],
-    closestItemPosition[2] + 0.35,
+    closestItemPosition[2] + 0.2,
   ).applyAxisAngle(
     new THREE.Vector3(0, 1, 0),
     THREE.MathUtils.degToRad(72 * rotationAngleMultiplier),
@@ -54,4 +54,11 @@ export function moveAtPosition(
   interpolationValue = 0.1,
 ) {
   camera.position.lerp(targetPosition, interpolationValue);
+}
+export function isValidCoordinate(coordinate) {
+  return (
+    Array.isArray(coordinate) &&
+    coordinate.length === 3 &&
+    coordinate.every((val) => typeof val === "number" && !isNaN(val))
+  );
 }

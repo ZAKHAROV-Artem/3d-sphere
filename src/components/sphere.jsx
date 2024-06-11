@@ -4,10 +4,11 @@ import {
   getClosestItem,
   getCameraTargetPositionAfterRotation,
   moveAtPosition,
+  isValidCoordinate,
 } from "../lib/utils";
 import ServiceItem from "./service-item";
 import { categories } from "../lib/data";
-import { Resize, useTexture } from "@react-three/drei";
+import { Line, Resize, useTexture } from "@react-three/drei";
 import { SPHERE_RADIUS } from "../lib/constants";
 import * as THREE from "three";
 
@@ -41,7 +42,6 @@ export default function Sphere() {
   const handlePointerUp = () => {
     setIsSphereMoving(false);
   };
-  console.log(viewport);
   return (
     <Resize width scale={3}>
       <mesh
@@ -49,7 +49,7 @@ export default function Sphere() {
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
         onPointerOut={handlePointerUp}
-        scale={viewport.width < 3.5 ? 0.8 : 1}
+        scale={viewport.width < 4 ? 0.5 : 0.6}
       >
         <sphereGeometry args={[SPHERE_RADIUS, 50, 50]} />
         <meshStandardMaterial map={texture} />
@@ -64,6 +64,27 @@ export default function Sphere() {
                 {...item}
               />
             ))}
+            {/* Draw lines from the category title to each child */}
+            {categoryItems.map((item, itemI) => {
+              if (item.isTitle && isValidCoordinate(item.position)) {
+                const titlePosition = new THREE.Vector3(...item.position);
+                return categoryItems.map((child, childI) => {
+                  if (!child.isTitle && isValidCoordinate(child.position)) {
+                    const childPosition = new THREE.Vector3(...child.position);
+                    return (
+                      <Line
+                        key={`line-${categoryI}-${childI}`}
+                        points={[titlePosition, childPosition]}
+                        color="black"
+                        lineWidth={1}
+                      />
+                    );
+                  }
+                  return null;
+                });
+              }
+              return null;
+            })}
           </group>
         ))}
       </mesh>
