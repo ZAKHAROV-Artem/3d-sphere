@@ -73,3 +73,16 @@ export function createCirclePoints(radius, segments) {
   }
   return points;
 }
+
+export function calculateControlPoint(start, end) {
+  const startVec = new THREE.Vector3(...start);
+  const endVec = new THREE.Vector3(...end);
+  const midVec = new THREE.Vector3()
+    .addVectors(startVec, endVec)
+    .multiplyScalar(0.5);
+  const offsetVec = midVec
+    .clone()
+    .normalize()
+    .multiplyScalar(SPHERE_RADIUS * 1.15);
+  return offsetVec.toArray();
+}

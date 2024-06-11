@@ -6,10 +6,11 @@ import {
   moveAtPosition,
   isValidCoordinate,
   createCirclePoints,
+  calculateControlPoint,
 } from "../lib/utils";
 import ServiceItem from "./service-item";
 import { categories } from "../lib/data";
-import { Line, Resize, useTexture } from "@react-three/drei";
+import { Line, QuadraticBezierLine, useTexture } from "@react-three/drei";
 import { SPHERE_RADIUS } from "../lib/constants";
 import * as THREE from "three";
 
@@ -68,9 +69,12 @@ export default function Sphere() {
               return categoryItems.map((child, childI) => {
                 if (!child.isTitle && isValidCoordinate(child.position)) {
                   return (
-                    <Line
+                    <QuadraticBezierLine
                       key={`line-${categoryI}-${childI}`}
-                      points={[titlePosition, child.position]}
+                      start={titlePosition}
+                      end={child.position}
+                      mid={calculateControlPoint(titlePosition, child.position)}
+                      segments={20}
                       color="black"
                       lineWidth={1}
                     />
