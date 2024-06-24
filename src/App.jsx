@@ -2,6 +2,7 @@ import { ContactShadows, OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import Sphere from "./components/sphere";
 import { Suspense } from "react";
+import FloatingBlock from "./components/floating-block";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         />
         <OrbitControls enableZoom={false} rotateSpeed={0.5} />
       </Canvas>
+      <FloatingBlock />
     </div>
   );
 }

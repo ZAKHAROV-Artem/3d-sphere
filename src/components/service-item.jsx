@@ -1,8 +1,15 @@
 import { Billboard, Text } from "@react-three/drei";
+import { useSelectedServicePopup } from "../store/use-selected-service-popup";
 
-const ServiceItem = ({ text, position, isTitle = false }) => {
+export default function ServiceItem({ text, url, position, isTitle = false }) {
+  const setSelectedService = useSelectedServicePopup(
+    (state) => state.setSelectedService,
+  );
   return (
-    <Billboard position={position}>
+    <Billboard
+      position={position}
+      onClick={() => setSelectedService({ text, url })}
+    >
       <Text
         fontSize={isTitle ? 0.03 : 0.02}
         color="black"
@@ -14,5 +21,4 @@ const ServiceItem = ({ text, position, isTitle = false }) => {
       </Text>
     </Billboard>
   );
-};
-export default ServiceItem;
+}
