@@ -13,6 +13,8 @@ import { categories } from "../lib/data";
 import { Line, QuadraticBezierLine, useTexture } from "@react-three/drei";
 import { SPHERE_RADIUS } from "../lib/constants";
 import * as THREE from "three";
+import { useSelectedService } from "../store/use-selected-service";
+import { useShallow } from "zustand/react/shallow";
 
 export default function Sphere() {
   const texture = useTexture("/texture.jpg", (texture) => {
@@ -20,6 +22,12 @@ export default function Sphere() {
     texture.wrapT = THREE.RepeatWrapping;
     texture.offset.setX(0.05);
   });
+  const { selectedService, setSelectedService } = useSelectedService(
+    useShallow((state) => ({
+      selectedService: state.selectedService,
+      setSelectedService: state.setSelectedService,
+    })),
+  );
   const [isSphereMoving, setIsSphereMoving] = useState(false);
   const sphereRef = useRef();
   const { viewport } = useThree();
@@ -29,7 +37,9 @@ export default function Sphere() {
         camera,
         categories,
       );
-
+      if (closestItem.text !== selectedService.text) {
+        setSelectedService(closestItem);
+      }
       const targetPos = getCameraTargetPositionAfterRotation(
         closestItem.position,
         closestItemCategoryGroupIndex,
@@ -54,7 +64,7 @@ export default function Sphere() {
       scale={viewport.width < 4 ? 0.8 : 0.9}
     >
       <sphereGeometry args={[SPHERE_RADIUS, 50, 50]} />
-      <meshStandardMaterial map={texture} />
+      <meshStandardMaterial map={texture} toneMapped={false} />
       {categories.map((categoryItems, categoryI) => (
         <group
           rotation-y={THREE.MathUtils.degToRad(72 * categoryI)}

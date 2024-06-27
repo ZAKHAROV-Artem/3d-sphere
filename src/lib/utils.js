@@ -89,6 +89,6 @@ export function calculateControlPoint(start, end) {
   const offsetVec = midVec
     .clone()
     .normalize()
-    .multiplyScalar(SPHERE_RADIUS * 1.15);
+    .multiplyScalar(SPHERE_RADIUS * 1.135);
   return offsetVec.toArray();
 }
