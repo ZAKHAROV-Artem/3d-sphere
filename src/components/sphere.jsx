@@ -37,7 +37,7 @@ export default function Sphere() {
         camera,
         categories,
       );
-      if (closestItem.text !== selectedService.text) {
+      if (closestItem?.text !== selectedService?.text) {
         setSelectedService(closestItem);
       }
       const targetPos = getCameraTargetPositionAfterRotation(
