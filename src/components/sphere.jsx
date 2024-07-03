@@ -10,18 +10,21 @@ import {
 } from "../lib/utils";
 import ServiceItem from "./service-item";
 import { categories } from "../lib/data";
-import { Line, QuadraticBezierLine, useTexture } from "@react-three/drei";
+import {
+  Image,
+  Line,
+  MeshTransmissionMaterial,
+  QuadraticBezierLine,
+  useTexture,
+} from "@react-three/drei";
 import { SPHERE_RADIUS } from "../lib/constants";
 import * as THREE from "three";
 import { useSelectedService } from "../store/use-selected-service";
 import { useShallow } from "zustand/react/shallow";
 
 export default function Sphere() {
-  const texture = useTexture("/texture.jpg", (texture) => {
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.offset.setX(0.05);
-  });
+  const logoRef = useRef();
+
   const { selectedService, setSelectedService } = useSelectedService(
     useShallow((state) => ({
       selectedService: state.selectedService,
@@ -32,6 +35,8 @@ export default function Sphere() {
   const sphereRef = useRef();
   const { viewport } = useThree();
   useFrame(({ camera }) => {
+    logoRef.current.rotation.y =
+      (logoRef.current.rotation.y + 0.005) % (2 * Math.PI);
     if (!isSphereMoving) {
       const { closestItem, closestItemCategoryGroupIndex } = getClosestItem(
         camera,
@@ -63,8 +68,14 @@ export default function Sphere() {
       onPointerOut={handlePointerUp}
       scale={viewport.width < 4 ? 0.8 : 0.9}
     >
+      <Image ref={logoRef} url="/logo.png" transparent opacity={0.7} />
       <sphereGeometry args={[SPHERE_RADIUS, 50, 50]} />
-      <meshStandardMaterial map={texture} toneMapped={false} />
+      <MeshTransmissionMaterial
+        backside
+        backsideThickness={0.001}
+        thickness={0.001}
+        // roughness={0.2}
+      />
       {categories.map((categoryItems, categoryI) => (
         <group
           rotation-y={THREE.MathUtils.degToRad(72 * categoryI)}

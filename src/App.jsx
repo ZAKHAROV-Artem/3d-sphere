@@ -1,4 +1,10 @@
-import { ContactShadows, OrbitControls } from "@react-three/drei";
+import {
+  ContactShadows,
+  Environment,
+  Lightformer,
+  OrbitControls,
+  SpotLight,
+} from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import Sphere from "./components/sphere";
 import { Suspense } from "react";
@@ -13,7 +19,14 @@ function App() {
           fov: 100,
         }}
       >
+        <color attach="background" args={["#e0e0e0"]} />
         <ambientLight intensity={6} />
+        <SpotLight
+          position={[20, 20, 10]}
+          penumbra={1}
+          castShadow
+          angle={0.2}
+        />
         <Suspense fallback={null}>
           <Sphere />
         </Suspense>
@@ -27,6 +40,15 @@ function App() {
           opacity={0.3}
           color="black"
         />
+
+        <Environment preset="city">
+          <Lightformer
+            intensity={8}
+            position={[10, 5, 0]}
+            scale={[10, 50, 1]}
+            onUpdate={(self) => self.lookAt(0, 0, 0)}
+          />
+        </Environment>
         <OrbitControls enableZoom={false} rotateSpeed={0.5} />
       </Canvas>
       <FloatingBlock />
