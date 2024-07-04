@@ -37,6 +37,8 @@ export default function Sphere() {
   useFrame(({ camera }) => {
     logoRef.current.rotation.y =
       (logoRef.current.rotation.y + 0.005) % (2 * Math.PI);
+    // logoRef2.current.rotation.y =
+    //   Math.PI + ((logoRef2.current.rotation.y + 0.005) % (2 * Math.PI));
     if (!isSphereMoving) {
       const { closestItem, closestItemCategoryGroupIndex } = getClosestItem(
         camera,
@@ -68,7 +70,10 @@ export default function Sphere() {
       onPointerOut={handlePointerUp}
       scale={viewport.width < 4 ? 0.8 : 0.9}
     >
-      <Image ref={logoRef} url="/logo.png" transparent opacity={0.7} />
+      <group ref={logoRef}>
+        <Image url="/logo.svg" transparent opacity={1} />
+        <Image rotation-y={Math.PI} url="/logo.svg" transparent opacity={1} />
+      </group>
       <sphereGeometry args={[SPHERE_RADIUS, 50, 50]} />
       <MeshTransmissionMaterial
         backside
