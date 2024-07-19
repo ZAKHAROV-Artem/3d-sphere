@@ -52,7 +52,7 @@ const Sphere = () => {
           closestItem.position,
           closestItemCategoryGroupIndex,
         );
-        moveAtPosition(camera, targetPos, 0.04);
+        moveAtPosition(camera, targetPos, 0.01);
       }
     },
     [isSphereMoving, selectedService, setSelectedService],
@@ -91,7 +91,7 @@ const Sphere = () => {
         samples={1}
       />
       {categories.map((categoryItems, categoryI) => {
-        const titlePositions = [];
+        let title = {};
         return (
           <group
             rotation-y={THREE.MathUtils.degToRad(72 * categoryI)}
@@ -99,7 +99,7 @@ const Sphere = () => {
           >
             {categoryItems.map((item, itemI) => {
               if (item.isTitle && isValidCoordinate(item.position)) {
-                titlePositions.push({ position: item.position, index: itemI });
+                title = { position: item.position, index: itemI };
               }
               return (
                 <ServiceItem
@@ -110,7 +110,7 @@ const Sphere = () => {
             })}
             {categoryItems.map((item, itemI) => {
               if (!item.isTitle && isValidCoordinate(item.position)) {
-                return titlePositions.map((title) => (
+                return (
                   <QuadraticBezierLine
                     key={`line-${title.index}-${itemI}`}
                     start={title.position}
@@ -120,7 +120,7 @@ const Sphere = () => {
                     color="black"
                     lineWidth={1}
                   />
-                ));
+                );
               }
               return null;
             })}
