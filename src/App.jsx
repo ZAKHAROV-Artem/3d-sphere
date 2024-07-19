@@ -41,7 +41,7 @@ function App() {
           color="black"
         />
 
-        <Environment preset="city">
+        <Environment>
           <Lightformer
             intensity={8}
             position={[10, 5, 0]}
