@@ -36,28 +36,26 @@ const Sphere = () => {
   const { viewport } = useThree();
 
   useFrame(
-    useCallback(
-      ({ camera }) => {
-        logoRef.current.rotation.y =
-          (logoRef.current.rotation.y + 0.005) % (2 * Math.PI);
+    ({ camera }) => {
+      logoRef.current.rotation.y =
+        (logoRef.current.rotation.y + 0.005) % (2 * Math.PI);
 
-        if (!isSphereMoving) {
-          const { closestItem, closestItemCategoryGroupIndex } = getClosestItem(
-            camera,
-            categories,
-          );
-          if (closestItem?.text !== selectedService?.text) {
-            setSelectedService(closestItem);
-          }
-          const targetPos = getCameraTargetPositionAfterRotation(
-            closestItem.position,
-            closestItemCategoryGroupIndex,
-          );
-          moveAtPosition(camera, targetPos, 0.04);
+      if (!isSphereMoving) {
+        const { closestItem, closestItemCategoryGroupIndex } = getClosestItem(
+          camera,
+          categories,
+        );
+        if (closestItem?.text !== selectedService?.text) {
+          setSelectedService(closestItem);
         }
-      },
-      [isSphereMoving, selectedService, setSelectedService],
-    ),
+        const targetPos = getCameraTargetPositionAfterRotation(
+          closestItem.position,
+          closestItemCategoryGroupIndex,
+        );
+        moveAtPosition(camera, targetPos, 0.04);
+      }
+    },
+    [isSphereMoving, selectedService, setSelectedService],
   );
 
   const handlePointerDown = useCallback(() => {
