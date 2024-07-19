@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useMemo, useCallback, memo } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import {
   getClosestItem,
@@ -21,7 +21,7 @@ import * as THREE from "three";
 import { useSelectedService } from "../store/use-selected-service";
 import { useShallow } from "zustand/react/shallow";
 
-export default function Sphere() {
+const Sphere = () => {
   const logoRef = useRef();
 
   const { selectedService, setSelectedService } = useSelectedService(
@@ -30,36 +30,49 @@ export default function Sphere() {
       setSelectedService: state.setSelectedService,
     })),
   );
+
   const [isSphereMoving, setIsSphereMoving] = useState(false);
   const sphereRef = useRef();
   const { viewport } = useThree();
-  useFrame(({ camera }) => {
-    logoRef.current.rotation.y =
-      (logoRef.current.rotation.y + 0.005) % (2 * Math.PI);
 
-    if (!isSphereMoving) {
-      const { closestItem, closestItemCategoryGroupIndex } = getClosestItem(
-        camera,
-        categories,
-      );
-      if (closestItem?.text !== selectedService?.text) {
-        setSelectedService(closestItem);
-      }
-      const targetPos = getCameraTargetPositionAfterRotation(
-        closestItem.position,
-        closestItemCategoryGroupIndex,
-      );
-      moveAtPosition(camera, targetPos, 0.04);
-    }
-  });
-  const handlePointerDown = () => {
+  useFrame(
+    useCallback(
+      ({ camera }) => {
+        logoRef.current.rotation.y =
+          (logoRef.current.rotation.y + 0.005) % (2 * Math.PI);
+
+        if (!isSphereMoving) {
+          const { closestItem, closestItemCategoryGroupIndex } = getClosestItem(
+            camera,
+            categories,
+          );
+          if (closestItem?.text !== selectedService?.text) {
+            setSelectedService(closestItem);
+          }
+          const targetPos = getCameraTargetPositionAfterRotation(
+            closestItem.position,
+            closestItemCategoryGroupIndex,
+          );
+          moveAtPosition(camera, targetPos, 0.04);
+        }
+      },
+      [isSphereMoving, selectedService, setSelectedService],
+    ),
+  );
+
+  const handlePointerDown = useCallback(() => {
     setIsSphereMoving(true);
-  };
+  }, []);
 
-  const handlePointerUp = () => {
+  const handlePointerUp = useCallback(() => {
     setIsSphereMoving(false);
-  };
-  const circlePoints = createCirclePoints(SPHERE_RADIUS + 0.1, 100);
+  }, []);
+
+  const circlePoints = useMemo(
+    () => createCirclePoints(SPHERE_RADIUS + 0.1, 100),
+    [],
+  );
+
   return (
     <mesh
       ref={sphereRef}
@@ -79,37 +92,46 @@ export default function Sphere() {
         distortionScale={0}
         samples={1}
       />
-      {categories.map((categoryItems, categoryI) => (
-        <group
-          rotation-y={THREE.MathUtils.degToRad(72 * categoryI)}
-          key={categoryI}
-        >
-          {categoryItems.map((item, itemI) => (
-            <ServiceItem key={`category${categoryI}-item${itemI}`} {...item} />
-          ))}
-          {categoryItems.map((item, itemI) => {
-            if (item.isTitle && isValidCoordinate(item.position)) {
-              const titlePosition = item.position;
-              return categoryItems.map((child, childI) => {
-                if (!child.isTitle && isValidCoordinate(child.position)) {
-                  return (
-                    <QuadraticBezierLine
-                      key={`line-${categoryI}-${childI}`}
-                      start={titlePosition}
-                      end={child.position}
-                      mid={calculateControlPoint(titlePosition, child.position)}
-                      segments={20}
-                      color="black"
-                      lineWidth={1}
-                    />
-                  );
-                }
-              });
-            }
-          })}
-        </group>
-      ))}
+      {categories.map((categoryItems, categoryI) => {
+        const titlePositions = [];
+        return (
+          <group
+            rotation-y={THREE.MathUtils.degToRad(72 * categoryI)}
+            key={categoryI}
+          >
+            {categoryItems.map((item, itemI) => {
+              if (item.isTitle && isValidCoordinate(item.position)) {
+                titlePositions.push({ position: item.position, index: itemI });
+              }
+              return (
+                <ServiceItem
+                  key={`category${categoryI}-item${itemI}`}
+                  {...item}
+                />
+              );
+            })}
+            {categoryItems.map((item, itemI) => {
+              if (!item.isTitle && isValidCoordinate(item.position)) {
+                return titlePositions.map((title) => (
+                  <QuadraticBezierLine
+                    key={`line-${title.index}-${itemI}`}
+                    start={title.position}
+                    end={item.position}
+                    mid={calculateControlPoint(title.position, item.position)}
+                    segments={20}
+                    color="black"
+                    lineWidth={1}
+                  />
+                ));
+              }
+              return null;
+            })}
+          </group>
+        );
+      })}
       <Line points={circlePoints} color="red" lineWidth={1} />
     </mesh>
   );
-}
+};
+
+export default memo(Sphere);

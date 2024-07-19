@@ -70,6 +70,8 @@ export function isValidCoordinate(coordinate) {
 }
 
 export function createCirclePoints(radius, segments) {
+  console.log("CREATE CIRCLE POINTS");
+
   const points = [];
   for (let i = 0; i <= segments; i++) {
     const angle = (i / segments) * Math.PI * 2;
