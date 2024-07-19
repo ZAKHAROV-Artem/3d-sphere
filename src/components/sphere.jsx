@@ -77,7 +77,7 @@ export default function Sphere() {
         chromaticAberration={0}
         anisotropicBlur={0}
         distortionScale={0}
-        samples={0}
+        samples={1}
       />
       {categories.map((categoryItems, categoryI) => (
         <group
