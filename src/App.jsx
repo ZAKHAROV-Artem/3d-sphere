@@ -41,14 +41,14 @@ function App() {
           color="black"
         />
 
-        <Environment>
+        {/* <Environment>
           <Lightformer
             intensity={8}
             position={[10, 5, 0]}
             scale={[10, 50, 1]}
             onUpdate={(self) => self.lookAt(0, 0, 0)}
           />
-        </Environment>
+        </Environment> */}
         <OrbitControls enableZoom={false} rotateSpeed={0.5} />
       </Canvas>
       <FloatingBlock />
