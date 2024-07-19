@@ -31,7 +31,7 @@ function App() {
           <Sphere />
         </Suspense>
 
-        <ContactShadows
+        {/* <ContactShadows
           frames={1}
           scale={10}
           position={[0, -2.2, 0]}
@@ -39,7 +39,7 @@ function App() {
           blur={5}
           opacity={0.3}
           color="black"
-        />
+        /> */}
 
         {/* <Environment>
           <Lightformer
