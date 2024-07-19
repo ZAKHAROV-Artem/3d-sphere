@@ -73,7 +73,12 @@ export default function Sphere() {
         <Image rotation-y={Math.PI} url="/logo.svg" transparent opacity={1} />
       </group>
       <sphereGeometry args={[SPHERE_RADIUS, 50, 50]} />
-      <MeshTransmissionMaterial />
+      <MeshTransmissionMaterial
+        chromaticAberration={0}
+        anisotropicBlur={0}
+        distortionScale={0}
+        samples={0}
+      />
       {categories.map((categoryItems, categoryI) => (
         <group
           rotation-y={THREE.MathUtils.degToRad(72 * categoryI)}
