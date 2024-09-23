@@ -54,7 +54,7 @@ function App() {
       <FloatingBlock />
       <a
         href="https://client.zahist.ua/homepage?makeAppointment=true"
-        target="_blank"
+        target={window?.ReactNativeWebView ? "_self" : "_blank"}
         className="fixed bottom-2 right-2 rounded-lg bg-blue-500 px-2 py-1 text-sm text-white sm:px-3 sm:py-2 sm:text-base"
       >
         Записатися на консультацію
