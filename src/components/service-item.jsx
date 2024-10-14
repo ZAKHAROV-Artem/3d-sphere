@@ -1,7 +1,7 @@
 import { Billboard, Text } from "@react-three/drei";
 import * as THREE from "three";
 
-import { roundedGeometry } from "../utils/helpers";
+import { createRoundedSquareGeometry } from "../utils/helpers";
 import ServiceItemPopover from "./service-item-popover";
 import { useState } from "react";
 
@@ -23,8 +23,7 @@ export default function ServiceItem({
   const textHeight = lines.length * fontSize * 2.4;
 
   const radius = 0.015;
-  const segments = 10;
-  const geometry = roundedGeometry(textWidth, textHeight, radius, segments);
+  const geometry = createRoundedSquareGeometry(textWidth, textHeight, radius);
 
   const handlePointerOver = () => {
     setIsHovered(true);

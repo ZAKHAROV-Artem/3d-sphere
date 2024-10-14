@@ -1,44 +1,23 @@
 import { Billboard, Text } from "@react-three/drei";
-import * as THREE from "three";
 
 import {
-  convertRGBToThreeJS,
   createRoundedSquareGeometry,
-  roundedGeometry,
+  createTriangleGeometry,
 } from "../utils/helpers";
 
 export default function ServiceItemPopover({ text, url, isOpen }) {
   const padding = 0.02;
   const radius = 0.015;
-  const segments = 10;
   const wrapperWidth = 0.25 + padding * 2;
   const wrapperHeight = 0.1 + padding * 3;
-  const buttonWrapperGeometry = roundedGeometry(
-    wrapperWidth,
-    wrapperHeight,
-    radius,
-    segments,
-  );
-  const buttonGeometry = roundedGeometry(0.25, 0.05, radius, segments);
 
-  const shape = new THREE.Shape();
-  shape.moveTo(-wrapperWidth / 2, -wrapperHeight / 2); // Bottom-left corner of the square
-  shape.lineTo(-wrapperWidth / 2, wrapperHeight / 2); // Top-left corner of the square
-  shape.lineTo(wrapperWidth / 2, wrapperHeight / 2); // Top-right corner of the square
-  shape.lineTo(wrapperWidth / 2, -wrapperHeight / 2); // Bottom-right corner of the square
-  shape.lineTo(-wrapperWidth / 2, -wrapperHeight / 2);
-  const shapeGeometry = createRoundedSquareGeometry(
+  const buttonWrapperGeometry = createRoundedSquareGeometry(
     wrapperWidth,
     wrapperHeight,
     radius,
   );
-
-  const triangleShape = new THREE.Shape();
-  triangleShape.moveTo(0, 0);
-  triangleShape.lineTo(0.013, -0.009);
-  triangleShape.lineTo(-0.013, -0.009);
-  triangleShape.lineTo(0, 0);
-  const triangleGeometry = new THREE.ShapeGeometry(triangleShape);
+  const buttonGeometry = createRoundedSquareGeometry(0.25, 0.05, radius);
+  const triangleGeometry = createTriangleGeometry();
 
   const handleButtonClick = (link) => {
     const target = window?.ReactNativeWebView ? "_self" : "_blank";
@@ -49,7 +28,7 @@ export default function ServiceItemPopover({ text, url, isOpen }) {
 
   return (
     <Billboard position={[0, 0.13, 0.01]}>
-      <mesh geometry={shapeGeometry} position={[0, 0, 0]}>
+      <mesh geometry={buttonWrapperGeometry} position={[0, 0, 0]}>
         <meshBasicMaterial color={"white"} toneMapped={false} />
       </mesh>
 
