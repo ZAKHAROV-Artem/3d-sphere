@@ -3,6 +3,7 @@ import * as THREE from "three";
 
 import { roundedGeometry } from "../utils/helpers";
 import ServiceItemPopover from "./service-item-popover";
+import { useState } from "react";
 
 export default function ServiceItem({
   text,
@@ -12,6 +13,8 @@ export default function ServiceItem({
   url,
   isOpen,
 }) {
+  const [isHovered, setIsHovered] = useState(false);
+
   const fontSize = isTitle ? 0.03 : 0.02;
   const lines = text.split("\n");
 
@@ -23,9 +26,23 @@ export default function ServiceItem({
   const segments = 10;
   const geometry = roundedGeometry(textWidth, textHeight, radius, segments);
 
+  const handlePointerOver = () => {
+    setIsHovered(true);
+  };
+
+  const handlePointerOut = () => {
+    setIsHovered(false);
+  };
+
   return (
     <Billboard position={position}>
-      <mesh geometry={geometry} onClick={onClick} position={[0, 0, 0.02]}>
+      <mesh
+        onPointerOver={handlePointerOver}
+        onPointerOut={handlePointerOut}
+        geometry={geometry}
+        onClick={onClick}
+        position={[0, 0, 0.02]}
+      >
         <meshBasicMaterial
           color={new THREE.Color(0xffffff)}
           toneMapped={false}
@@ -41,7 +58,7 @@ export default function ServiceItem({
       >
         {text}
       </Text>
-      <ServiceItemPopover isOpen={isOpen} text={text} url={url} />
+      <ServiceItemPopover isOpen={isOpen || isHovered} text={text} url={url} />
     </Billboard>
   );
 }

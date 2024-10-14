@@ -35,7 +35,11 @@ export default function ServiceItemPopover({ text, url, isOpen }) {
     <Billboard position={[0, 0.13, 0.01]}>
       <mesh geometry={buttonWrapperGeometry} position={[0, 0, 0]}>
         <meshBasicMaterial
-          color={new THREE.Color(0xffffff)}
+          color={"white"}
+          opacity={1}
+          transparent={false}
+          depthWrite={true}
+          depthTest={false}
           toneMapped={false}
         />
       </mesh>
@@ -45,7 +49,7 @@ export default function ServiceItemPopover({ text, url, isOpen }) {
         onClick={() => handleButtonClick(url)}
         position={[0, padding * 1.5, 0]}
       >
-        <meshBasicMaterial color={new THREE.Color(0xffffff)} />
+        <meshBasicMaterial color={"white"} />
         <Text
           anchorX="center"
           anchorY="middle"
@@ -83,10 +87,7 @@ export default function ServiceItemPopover({ text, url, isOpen }) {
         position={[0, -0.088, 0]}
         rotation={[0, 0, Math.PI]}
       >
-        <meshBasicMaterial
-          color={new THREE.Color(0xffffff)}
-          toneMapped={false}
-        />
+        <meshBasicMaterial color={"white"} toneMapped={false} />
       </mesh>
     </Billboard>
   );
