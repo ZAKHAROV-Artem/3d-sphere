@@ -27,7 +27,7 @@ export default function ServiceItem({
     <Billboard position={position}>
       <mesh geometry={geometry} onClick={onClick} position={[0, 0, 0.02]}>
         <meshBasicMaterial
-          color={{ r: 255, g: 255, b: 255 }}
+          color={new THREE.Color(0xffffff)}
           toneMapped={false}
         />
       </mesh>
