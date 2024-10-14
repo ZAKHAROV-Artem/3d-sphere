@@ -150,3 +150,77 @@ export function roundedGeometry(w, h, r, s) {
     uvs.push(0.5 + x / w, 0.5 + y / h);
   }
 }
+
+export function createRoundedSquareGeometry(
+  wrapperWidth,
+  wrapperHeight,
+  radius,
+) {
+  const shape = new THREE.Shape();
+
+  radius = Math.min(
+    radius,
+    Math.abs(wrapperWidth) / 2,
+    Math.abs(wrapperHeight) / 2,
+  );
+
+  // Start at the bottom-left corner with rounding
+  shape.moveTo(-wrapperWidth / 2, -wrapperHeight / 2);
+
+  // Draw left vertical edge
+  shape.lineTo(-wrapperWidth / 2, -wrapperHeight / 2);
+
+  // Bottom-left corner arc
+  shape.quadraticCurveTo(
+    -wrapperWidth / 2,
+    -wrapperHeight / 2 + radius,
+    -wrapperWidth / 2,
+    -wrapperHeight / 2,
+  );
+
+  // Draw bottom horizontal edge
+  shape.lineTo(wrapperWidth / 2 - radius, -wrapperHeight / 2);
+
+  // Bottom-right corner arc
+  shape.quadraticCurveTo(
+    wrapperWidth / 2,
+    -wrapperHeight / 2,
+    wrapperWidth / 2,
+    -wrapperHeight / 2 + radius,
+  );
+
+  // Draw right vertical edge
+  shape.lineTo(wrapperWidth / 2, wrapperHeight / 2 - radius);
+
+  // Top-right corner arc
+  shape.quadraticCurveTo(
+    wrapperWidth / 2,
+    wrapperHeight / 2,
+    wrapperWidth / 2 - radius,
+    wrapperHeight / 2,
+  );
+
+  // Draw top horizontal edge
+  shape.lineTo(-wrapperWidth / 2 + radius, wrapperHeight / 2);
+
+  // Top-left corner arc
+  shape.quadraticCurveTo(
+    -wrapperWidth / 2,
+    wrapperHeight / 2,
+    -wrapperWidth / 2,
+    wrapperHeight / 2 - radius,
+  );
+
+  // Draw left vertical edge to complete the shape
+  shape.lineTo(-wrapperWidth / 2, -wrapperHeight / 2 + radius);
+
+  // Closing arc to the starting point (bottom-left)
+  shape.quadraticCurveTo(
+    -wrapperWidth / 2,
+    -wrapperHeight / 2,
+    -wrapperWidth / 2 + radius,
+    -wrapperHeight / 2,
+  );
+
+  return new THREE.ShapeGeometry(shape);
+}
