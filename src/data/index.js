@@ -1,4 +1,4 @@
-import { getCoordinates } from "./utils";
+import { getCoordinates } from "../utils/helpers";
 
 const documents = [
   {

@@ -1,14 +1,8 @@
-import {
-  ContactShadows,
-  Environment,
-  Lightformer,
-  OrbitControls,
-  SpotLight,
-} from "@react-three/drei";
+import { OrbitControls, SpotLight } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import Sphere from "./components/sphere";
 import { Suspense } from "react";
-import FloatingBlock from "./components/floating-block";
+
+import Sphere from "./components/sphere";
 
 function App() {
   return (
@@ -19,13 +13,13 @@ function App() {
           fov: 100,
         }}
       >
-        <color attach="background" args={["#e0e0e0"]} />
+        <color args={["#e0e0e0"]} attach="background" />
         <ambientLight intensity={6} />
         <SpotLight
-          position={[20, 20, 10]}
-          penumbra={1}
-          castShadow
           angle={0.2}
+          castShadow
+          penumbra={1}
+          position={[20, 20, 10]}
         />
         <Suspense fallback={null}>
           <Sphere />
@@ -51,14 +45,6 @@ function App() {
         </Environment> */}
         <OrbitControls enableZoom={false} rotateSpeed={0.5} />
       </Canvas>
-      <FloatingBlock />
-      <a
-        href="https://client.zahist.ua/homepage?makeAppointment=true"
-        target={window?.ReactNativeWebView ? "_self" : "_blank"}
-        className="fixed bottom-2 right-2 rounded-lg bg-blue-500 px-2 py-1 text-sm text-white sm:px-3 sm:py-2 sm:text-base"
-      >
-        Записатися на консультацію
-      </a>
     </div>
   );
 }

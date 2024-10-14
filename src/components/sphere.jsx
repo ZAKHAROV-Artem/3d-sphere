@@ -1,25 +1,26 @@
-import { useRef, useState, useMemo, useCallback, memo } from "react";
-import { useFrame, useThree } from "@react-three/fiber";
-import {
-  getClosestItem,
-  getCameraTargetPositionAfterRotation,
-  moveAtPosition,
-  isValidCoordinate,
-  createCirclePoints,
-  calculateControlPoint,
-} from "../lib/utils";
-import ServiceItem from "./service-item";
-import { categories } from "../lib/data";
 import {
   Image,
   Line,
   MeshTransmissionMaterial,
   QuadraticBezierLine,
 } from "@react-three/drei";
-import { SPHERE_RADIUS } from "../lib/constants";
+import { useFrame, useThree } from "@react-three/fiber";
+import { useRef, useState, useMemo, useCallback, memo } from "react";
 import * as THREE from "three";
-import { useSelectedService } from "../store/use-selected-service";
 import { useShallow } from "zustand/react/shallow";
+
+import { useSelectedService } from "../store/use-selected-service";
+import { SPHERE_RADIUS } from "./../constants";
+import { categories } from "./../data";
+import {
+  calculateControlPoint,
+  createCirclePoints,
+  getCameraTargetPositionAfterRotation,
+  getClosestItem,
+  isValidCoordinate,
+  moveAtPosition,
+} from "./../utils/helpers";
+import ServiceItem from "./service-item";
 
 const Sphere = () => {
   const logoRef = useRef();
@@ -32,6 +33,8 @@ const Sphere = () => {
   );
 
   const [isSphereMoving, setIsSphereMoving] = useState(false);
+  const [openedService, setOpenedService] = useState(null);
+
   const sphereRef = useRef();
   const { viewport } = useThree();
 
@@ -66,6 +69,12 @@ const Sphere = () => {
     setIsSphereMoving(false);
   }, []);
 
+  const handleServiceClick = (item) => {
+    setOpenedService((prevOpened) =>
+      prevOpened?.text === item.text ? null : item,
+    );
+  };
+
   const circlePoints = useMemo(
     () => createCirclePoints(SPHERE_RADIUS + 0.1, 100),
     [],
@@ -73,20 +82,20 @@ const Sphere = () => {
 
   return (
     <mesh
-      ref={sphereRef}
       onPointerDown={handlePointerDown}
-      onPointerUp={handlePointerUp}
       onPointerOut={handlePointerUp}
+      onPointerUp={handlePointerUp}
+      ref={sphereRef}
       scale={viewport.width < 4 ? 0.8 : 0.9}
     >
       <group ref={logoRef}>
-        <Image url="/logo.svg" transparent opacity={1} />
-        <Image rotation-y={Math.PI} url="/logo.svg" transparent opacity={1} />
+        <Image opacity={1} transparent url="/logo.svg" />
+        <Image opacity={1} rotation-y={Math.PI} transparent url="/logo.svg" />
       </group>
       <sphereGeometry args={[SPHERE_RADIUS, 50, 50]} />
       <MeshTransmissionMaterial
-        chromaticAberration={0}
         anisotropicBlur={0}
+        chromaticAberration={0}
         distortionScale={0}
         samples={1}
       />
@@ -94,8 +103,8 @@ const Sphere = () => {
         let title = {};
         return (
           <group
-            rotation-y={THREE.MathUtils.degToRad(72 * categoryI)}
             key={categoryI}
+            rotation-y={THREE.MathUtils.degToRad(72 * categoryI)}
           >
             {categoryItems.map((item, itemI) => {
               if (item.isTitle && isValidCoordinate(item.position)) {
@@ -103,7 +112,9 @@ const Sphere = () => {
               }
               return (
                 <ServiceItem
+                  isOpen={openedService?.text === item.text}
                   key={`category${categoryI}-item${itemI}`}
+                  onClick={() => handleServiceClick(item)}
                   {...item}
                 />
               );
@@ -112,13 +123,13 @@ const Sphere = () => {
               if (!item.isTitle && isValidCoordinate(item.position)) {
                 return (
                   <QuadraticBezierLine
-                    key={`line-${title.index}-${itemI}`}
-                    start={title.position}
+                    color="black"
                     end={item.position}
+                    key={`line-${title.index}-${itemI}`}
+                    lineWidth={1}
                     mid={calculateControlPoint(title.position, item.position)}
                     segments={20}
-                    color="black"
-                    lineWidth={1}
+                    start={title.position}
                   />
                 );
               }
@@ -127,7 +138,7 @@ const Sphere = () => {
           </group>
         );
       })}
-      <Line points={circlePoints} color="red" lineWidth={1} />
+      <Line color="red" lineWidth={1} points={circlePoints} />
     </mesh>
   );
 };
